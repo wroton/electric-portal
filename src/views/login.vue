@@ -30,27 +30,39 @@
 <script>
 import http from "../services/http";
 
+const loginSuccessful = (e) => (response) => {
+  if (response.status != 200) {
+    e.error = e;
+    e.password = "";
+    return;
+  }
+
+  
+};
+
+const loginFailed = (e) => (error) => {
+  console.log(e);
+  console.log(error);
+};
+
 export default {
   data() {
     return {
+      error: "",
       username: "",
       password: "",
     };
   },
   methods: {
     login() {
-      console.log("test");
       const data = {
         username: this.username,
         password: this.password,
       };
 
-      console.log(data);
-
-      http
-        .post("api/1/token", data)
-        .then((response) => (this.jobs = response.data))
-        .catch((error) => console.log(error));
+      const success = loginSuccessful(this);
+      const error = loginFailed(this);
+      http.post("api/1/token", data).then(success).catch(error);
     },
   },
 };
