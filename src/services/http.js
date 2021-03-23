@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Build axios request executor.
 const http = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "http://electric-api.azurewebsites.net",
+  // baseURL: "http://localhost:5000",
   headers: {
     "Content-Type": "application/json"
   }
@@ -14,7 +15,7 @@ const http = axios.create({
 function handleFailure(error) {
   switch (error?.response?.status) {
     case 401:
-      document.location = "/login";
+      document.location = "login";
       break;
   }
 

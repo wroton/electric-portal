@@ -37,12 +37,13 @@ const loginSuccessful = (e) => (response) => {
     return;
   }
 
-  
+  // Go to jobs.
+  e.$router.push({ name: "Dashboard" });
 };
 
-const loginFailed = (e) => (error) => {
-  console.log(e);
-  console.log(error);
+const loginFailed = (e) => () => {
+  e.password = "";
+  return;
 };
 
 export default {

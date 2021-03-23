@@ -12,11 +12,10 @@
           </a>
         </div>
         <div class="navbar-menu">
-          <div class="navbar-start">
+          <div class="navbar-start"></div>
+          <div class="navbar-end">
             <router-link class="navbar-item" to="jobs">Jobs</router-link>
             <router-link class="navbar-item" to="about">About</router-link>
-          </div>
-          <div class="navbar-end">
             <div class="navbar-item">
               <div class="buttons">
                 <router-link class="button is-primary" to="login"
@@ -33,6 +32,8 @@
     </div>
   </div>
 </template>
+<script>
+</script>
 
 <style>
 </style>

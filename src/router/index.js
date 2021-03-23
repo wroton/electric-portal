@@ -5,17 +5,17 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home,
-    beforeEnter(to, from, next) {
-      console.log(to);
-      console.log(from);
-      console.log(next);
-    }
+    component: Home
   },
   {
     path: "/about",
     name: "About",
     component: () => import(/* webpackChunkName: "about" */ "@/views/about.vue")
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: () => import(/* webpackChunkName: "dashboard" */ "@/views/dashboard.vue")
   },
   {
     path: "/jobs",
