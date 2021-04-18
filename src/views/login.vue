@@ -2,9 +2,9 @@
 <template>
   <div class="box" style="width: 33.3%; margin: auto">
     <div class="field">
-      <label class="label">Username</label>
+      <label class="label">Email Address</label>
       <div class="control">
-        <input type="text" class="input" v-model="username" />
+        <input type="text" class="input" v-model="emailAddress" />
       </div>
     </div>
     <div class="field">
@@ -15,7 +15,15 @@
     </div>
     <div class="field">
       <div class="control">
-        <button class="button is-primary is-fullwidth" @click="login">
+        <button
+          v-bind:class="{
+            button: true,
+            'is-primary': true,
+            'is-fullwidth': true,
+            'is-loading': loading,
+          }"
+          @click="login"
+        >
           Login
         </button>
       </div>
@@ -26,22 +34,29 @@
       </div>
     </div>
   </div>
+  <div
+    v-bind:class="{
+      notification: true,
+      'is-danger': true,
+      'is-hidden': error == '',
+    }"
+    style="width: 33.3%; margin: auto; margin-top: 10px"
+  >
+    <button class="delete" @click="clearError"></button>
+    {{ this.error }}
+  </div>
 </template>
 <script>
-import http from "../services/http";
+import { login } from "../services/authentication";
 
-const loginSuccessful = (e) => (response) => {
-  if (response.status != 200) {
-    e.error = e;
-    e.password = "";
-    return;
-  }
-
-  // Go to jobs.
+const loginSuccessful = (e) => () => {
+  e.loading = false;
   e.$router.push({ name: "Dashboard" });
 };
 
-const loginFailed = (e) => () => {
+const loginFailed = (e) => (err) => {
+  e.error = err?.message;
+  e.loading = false;
   e.password = "";
   return;
 };
@@ -49,21 +64,27 @@ const loginFailed = (e) => () => {
 export default {
   data() {
     return {
+      emailAddress: "",
       error: "",
-      username: "",
+      loading: false,
       password: "",
     };
   },
   methods: {
+    clearError() {
+      this.error = "";
+    },
     login() {
+      this.loading = true;
+
       const data = {
-        username: this.username,
+        emailAddress: this.emailAddress,
         password: this.password,
       };
 
       const success = loginSuccessful(this);
       const error = loginFailed(this);
-      http.post("api/1/token", data).then(success).catch(error);
+      login(data.emailAddress, data.password).then(success).catch(error);
     },
   },
 };

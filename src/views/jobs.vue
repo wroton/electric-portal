@@ -35,7 +35,7 @@ export default {
   async mounted() {
     try {
       // Get all accessible jobs. Reset jobs if none were given.
-      let response = await http.get("api/1/jobs");
+      let response = await http.get("jobs");
       if (!response.data) {
         this.jobs = [];
         return;

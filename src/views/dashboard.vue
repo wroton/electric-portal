@@ -1,16 +1,3 @@
-  
 <template>
-  <div>
-    Dashboard
-  </div>
+  <h1 class="title is-4">Dashboard</h1>
 </template>
-<script>
-export default {
-  data() {
-    return {
-    };
-  },
-  mounted() {
-  },
-};
-</script>
