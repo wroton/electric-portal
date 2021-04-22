@@ -11,6 +11,14 @@ const routes = [
     }
   },
   {
+    path: "/clients",
+    name: "Clients",
+    component: () => import(/* webpackChunkName: "clients" */ "../views/clients.vue"),
+    meta: {
+      authorized: true
+    }
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import(/* webpackChunkName: "dashboard" */ "../views/dashboard.vue"),
@@ -30,6 +38,22 @@ const routes = [
     path: "/jobs",
     name: "Jobs",
     component: () => import(/* webpackChunkName: "jobs" */ "../views/jobs.vue"),
+    meta: {
+      authorized: true
+    }
+  },
+  {
+    path: "/schedule",
+    name: "Schedule",
+    component: () => import(/* webpackChunkName: "schedule" */ "../views/schedule.vue"),
+    meta: {
+      authorized: true
+    }
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: () => import(/* webpackChunkName: "settings" */ "../views/settings.vue"),
     meta: {
       authorized: true
     }

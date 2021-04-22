@@ -4,13 +4,23 @@
     <div class="field">
       <label class="label">Email Address</label>
       <div class="control">
-        <input type="text" class="input" v-model="emailAddress" />
+        <input
+          type="text"
+          class="input"
+          v-model="emailAddress"
+          @keypress="keyPressed"
+        />
       </div>
     </div>
     <div class="field">
       <label class="label">Password</label>
       <div class="control">
-        <input type="password" class="input" v-model="password" />
+        <input
+          type="password"
+          class="input"
+          v-model="password"
+          @keypress="keyPressed"
+        />
       </div>
     </div>
     <div class="field">
@@ -18,7 +28,7 @@
         <button
           v-bind:class="{
             button: true,
-            'is-primary': true,
+            'primary': true,
             'is-fullwidth': true,
             'is-loading': loading,
           }"
@@ -30,7 +40,7 @@
     </div>
     <div class="field">
       <div class="control">
-        <button class="button is-primary is-fullwidth">Sign Up</button>
+        <button class="button primary is-fullwidth">Sign Up</button>
       </div>
     </div>
   </div>
@@ -51,7 +61,7 @@ import { login } from "../services/authentication";
 
 const loginSuccessful = (e) => () => {
   e.loading = false;
-  e.$router.push({ name: "Dashboard" });
+  e.$router.push({ name: "Administrators" });
 };
 
 const loginFailed = (e) => (err) => {
@@ -73,6 +83,11 @@ export default {
   methods: {
     clearError() {
       this.error = "";
+    },
+    keyPressed(e) {
+      if (e?.keyCode === 13) {
+        this.login();
+      }
     },
     login() {
       this.loading = true;

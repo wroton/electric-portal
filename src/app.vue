@@ -6,7 +6,7 @@
       aria-label="main navigation"
       v-if="showMenu($router)"
     >
-      <div class="container" style="padding-bottom: 10px;">
+      <div class="container" style="padding-bottom: 10px">
         <div class="navbar-brand">
           <a class="navbar-item" href="">
             <img
@@ -20,11 +20,22 @@
           <div class="navbar-start"></div>
           <div class="navbar-end">
             <router-link class="navbar-item" to="/jobs">Jobs</router-link>
-            <router-link class="navbar-item" to="/technicians">Technicians</router-link>
-            <router-link class="navbar-item" to="/administrators">Administrators</router-link>
+            <router-link class="navbar-item" to="/clients">Clients</router-link>
+            <router-link class="navbar-item" to="/technicians"
+              >Technicians</router-link
+            >
+            <router-link class="navbar-item" to="/administrators"
+              >Administrators</router-link
+            >
+            <router-link class="navbar-item" to="/schedule"
+              >Schedule</router-link
+            >
+            <router-link class="navbar-item" to="/settings"
+              >Settings</router-link
+            >
             <div class="navbar-item">
               <div class="buttons">
-                <router-link class="button is-primary" to="/login"
+                <router-link class="button primary" to="/login"
                   >Login</router-link
                 >
               </div>
@@ -49,4 +60,15 @@ export default {
 </script>
 
 <style>
+.primary {
+  background-color: #353535;
+  color: white;
+  border-color: transparent;
+}
+
+.primary:hover {
+  background-color: #000000;
+  color: white;
+  border-color: transparent;
+}
 </style>
