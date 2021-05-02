@@ -19,24 +19,41 @@
         <div class="navbar-menu">
           <div class="navbar-start"></div>
           <div class="navbar-end">
-            <router-link class="navbar-item" to="/jobs">Jobs</router-link>
-            <router-link class="navbar-item" to="/clients">Clients</router-link>
-            <router-link class="navbar-item" to="/technicians"
+            <router-link class="navbar-item" to="/jobs" v-if="this.hasUser"
+              >Jobs</router-link
+            >
+            <router-link class="navbar-item" to="/clients" v-if="this.hasUser"
+              >Clients</router-link
+            >
+            <router-link
+              class="navbar-item"
+              to="/technicians"
+              v-if="this.hasUser"
               >Technicians</router-link
             >
-            <router-link class="navbar-item" to="/administrators"
+            <router-link
+              class="navbar-item"
+              to="/administrators"
+              v-if="this.hasUser"
               >Administrators</router-link
             >
-            <router-link class="navbar-item" to="/schedule"
+            <router-link class="navbar-item" to="/schedule" v-if="this.hasUser"
               >Schedule</router-link
             >
-            <router-link class="navbar-item" to="/settings"
+            <router-link class="navbar-item" to="/settings" v-if="this.hasUser"
               >Settings</router-link
             >
-            <div class="navbar-item">
+            <div class="navbar-item" v-if="!this.hasUser">
               <div class="buttons">
                 <router-link class="button primary" to="/login"
                   >Login</router-link
+                >
+              </div>
+            </div>
+            <div class="navbar-item" v-if="this.hasUser">
+              <div class="buttons">
+                <router-link class="button primary" to="/profile"
+                  >Profile</router-link
                 >
               </div>
             </div>
@@ -50,7 +67,15 @@
   </div>
 </template>
 <script>
+import { getUser } from "../src/services/authentication";
+
 export default {
+  data() {
+    let user = getUser();
+    return {
+      hasUser: user !== undefined && user !== null,
+    };
+  },
   methods: {
     showMenu(e) {
       return e?.currentRoute?._value?.meta?.hideMenu !== true;

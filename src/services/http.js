@@ -2,10 +2,12 @@ import axios from "axios";
 
 // Build axios request executor.
 const http = axios.create({
-  baseURL: "http://electric-api.azurewebsites.net/api/1/",
+  // baseURL: "http://electric-api.azurewebsites.net/api/1/",
+  baseURL: "http://localhost:5000/api/1/",
   headers: {
     "Content-Type": "application/json"
-  }
+  },
+  withCredentials: true
 });
 
 // Handles HTTP response error status codes.

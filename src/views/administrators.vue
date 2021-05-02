@@ -6,7 +6,9 @@
     <div class="column has-text-right">
       <div class="field">
         <div class="control">
-          <button class="button primary">Create Administrator</button>
+          <button class="button primary" @click="this.setupActive = true">
+            Create Administrator
+          </button>
         </div>
       </div>
     </div>
@@ -25,22 +27,68 @@
       </tr>
     </tbody>
   </table>
+  <setup
+    :id="selectedId"
+    :isActive="setupActive"
+    :hide="() => (this.setupActive = false)"
+    :saved="saved"
+  />
 </template>
 <script>
 import http from "../services/http";
+import setup from "../components/administrator-setup";
 
 export default {
+  components: {
+    setup,
+  },
   data() {
     return {
       admins: [],
+      selectedId: undefined,
+      setupActive: false,
     };
+  },
+  methods: {
+    saved(admin) {
+      // If there is no admin, do nothing else.
+      if (!admin) {
+        return;
+      }
+
+      // If this is a new admin, add to the beginning of the list.
+      if (!this.selectedId) {
+        this.admins.unshift(admin);
+        return;
+      }
+
+      // If this is an existing admin, replace the existing row's data.
+      this.admins.map((a) => {
+        if (a.id !== admin.id) {
+          return a;
+        }
+
+        return {
+          ...a,
+          ...admin,
+        };
+      });
+
+      // Hide the modal.
+      this.selectedId = undefined;
+      this.setupActive = false;
+    },
+    selectAdmin(id) {
+      this.selectedId = id;
+      this.setupActive = true;
+    },
   },
   async mounted() {
     try {
       // Get all accessible admins. Reset admins if none were given.
-      let response = await http.get("admins");
+      let response = await http.get("administrators");
       if (!response.data) {
-        this.jobs = [];
+        this.admins = [];
         return;
       }
     } catch (err) {

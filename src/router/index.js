@@ -43,17 +43,17 @@ const routes = [
     }
   },
   {
-    path: "/schedule",
-    name: "Schedule",
-    component: () => import(/* webpackChunkName: "schedule" */ "../views/schedule.vue"),
+    path: "/profile",
+    name: "Profile",
+    component: () => import(/* webpackChunkName: "profile" */ "../views/profile.vue"),
     meta: {
       authorized: true
     }
   },
   {
-    path: "/settings",
-    name: "Settings",
-    component: () => import(/* webpackChunkName: "settings" */ "../views/settings.vue"),
+    path: "/schedule",
+    name: "Schedule",
+    component: () => import(/* webpackChunkName: "schedule" */ "../views/schedule.vue"),
     meta: {
       authorized: true
     }
