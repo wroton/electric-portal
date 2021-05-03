@@ -40,6 +40,12 @@
             <router-link class="navbar-item" to="/schedule" v-if="this.hasUser"
               >Schedule</router-link
             >
+            <router-link
+              class="navbar-item"
+              to="/businesses"
+              v-if="this.hasUser"
+              >Businesses</router-link
+            >
             <router-link class="navbar-item" to="/settings" v-if="this.hasUser"
               >Settings</router-link
             >

@@ -1,0 +1,106 @@
+<template>
+  <div class="columns">
+    <div class="column">
+      <h1 class="title is-4">Businesses</h1>
+    </div>
+    <div class="column has-text-right">
+      <div class="field">
+        <div class="control">
+          <button class="button primary" @click="this.setupActive = true">
+            Create Business
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <th class="has-text-left">Name</th>
+        <th class="hax-text-left">City</th>
+        <th class="has-text-left">State</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="is-clickable"
+        v-for="business in this.businesses"
+        v-bind:key="business.id"
+        @click="this.selectBusiness(business.id)"
+      >
+        <td class="has-text-left">{{ business.name }}</td>
+        <td class="has-text-left">{{ business.city }}</td>
+        <td class="has-text-left">{{ business.state }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <setup
+    :id="selectedId"
+    :isActive="setupActive"
+    :hide="() => (this.setupActive = false)"
+    :saved="saved"
+  />
+</template>
+<script>
+import http from "../services/http";
+import setup from "../components/business-setup";
+
+export default {
+  components: {
+    setup,
+  },
+  data() {
+    return {
+      businesses: [],
+      selectedId: undefined,
+      setupActive: false,
+    };
+  },
+  methods: {
+    saved(business) {
+      // If there is no business, do nothing else.
+      if (!business) {
+        return;
+      }
+
+      // If this is a new business, add to the beginning of the list.
+      if (!this.selectedId) {
+        this.businesses.unshift(business);
+        return;
+      }
+
+      // If this is an existing business, replace the existing row's data.
+      this.businesses.map((b) => {
+        if (b.id !== business.id) {
+          return b;
+        }
+
+        return {
+          ...b,
+          ...business,
+        };
+      });
+
+      // Hide the modal.
+      this.selectedId = undefined;
+      this.setupActive = false;
+    },
+    selectBusiness(id) {
+      this.selectedId = id;
+      this.setupActive = true;
+    },
+  },
+  async mounted() {
+    try {
+      // Get all accessible businesses. Reset businesses if none were given.
+      let response = await http.get("businesses");
+      if (!response.data) {
+        this.businesses = [];
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+};
+</script>
