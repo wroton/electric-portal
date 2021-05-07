@@ -10,7 +10,7 @@
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">
-          {{ selectedId ? "Edit" : "Create" }} Business
+          {{ business ? "Edit" : "Create" }} Business
         </p>
       </header>
       <section class="modal-card-body">
@@ -112,12 +112,12 @@ export default {
   data() {
     return {
       error: "",
-      addressLine1: "",
-      addressLine2: "",
-      city: "",
-      name: "",
-      state: "",
-      zipCode: "",
+      addressLine1: this.business?.addressLine1,
+      addressLine2: this.business?.addressLine2,
+      city: this.business?.city,
+      name: this.business?.name,
+      state: this.business?.state,
+      zipCode: this.business?.zipCode,
       saving: false,
     };
   },
@@ -166,6 +166,6 @@ export default {
       this.hide();
     },
   },
-  props: ["isActive", "hide", "selectedId", "saved"],
+  props: ["isActive", "hide", "business", "saved"],
 };
 </script>

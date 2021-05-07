@@ -26,7 +26,7 @@
         class="is-clickable"
         v-for="business in this.businesses"
         v-bind:key="business.id"
-        @click="this.selectBusiness(business.id)"
+        @click="this.selectBusiness(business)"
       >
         <td class="has-text-left">{{ business.name }}</td>
         <td class="has-text-left">{{ business.city }}</td>
@@ -35,14 +35,14 @@
     </tbody>
   </table>
   <setup
-    :id="selectedId"
+    :business="selectedBusiness"
     :isActive="setupActive"
     :hide="() => (this.setupActive = false)"
     :saved="saved"
   />
 </template>
 <script>
-import http from "../services/http";
+import businesses from "../services/businesses";
 import setup from "../components/business-setup";
 
 export default {
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       businesses: [],
-      selectedId: undefined,
+      selectedBusiness: undefined,
       setupActive: false,
     };
   },
@@ -64,7 +64,7 @@ export default {
       }
 
       // If this is a new business, add to the beginning of the list.
-      if (!this.selectedId) {
+      if (!this.selectedBusiness) {
         this.businesses.unshift(business);
         return;
       }
@@ -82,22 +82,24 @@ export default {
       });
 
       // Hide the modal.
-      this.selectedId = undefined;
+      this.selectBusiness = undefined;
       this.setupActive = false;
     },
-    selectBusiness(id) {
-      this.selectedId = id;
+    selectBusiness(business) {
+      this.selectedBusiness = business;
       this.setupActive = true;
     },
   },
   async mounted() {
     try {
       // Get all accessible businesses. Reset businesses if none were given.
-      let response = await http.get("businesses");
-      if (!response.data) {
+      let response = await businesses.list();
+      if (!response?.data) {
         this.businesses = [];
         return;
       }
+
+      this.businesses = response.data;
     } catch (err) {
       console.log(err);
     }
