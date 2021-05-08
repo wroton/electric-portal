@@ -134,7 +134,7 @@ export default {
 
       // Create the request.
       const request = {
-        id: this.selectedId ? this.selectedId : undefined,
+        id: this.business.id ? this.business.id : undefined,
         addressLine1: this.addressLine1,
         addressLine2: goodString(this.addressLine2) ? this.addressLine2 : null,
         city: this.city,
@@ -144,7 +144,7 @@ export default {
       };
 
       // Determine the correct method.
-      const method = this.selectedId ? http.put : http.post;
+      const method = this.business.id ? http.put : http.post;
 
       // Create or edit the business.
       method("businesses", request)

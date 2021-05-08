@@ -82,7 +82,7 @@ export default {
       });
 
       // Hide the modal.
-      this.selectBusiness = undefined;
+      this.selectedBusiness = undefined;
       this.setupActive = false;
     },
     selectBusiness(business) {
