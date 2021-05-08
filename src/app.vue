@@ -4,7 +4,6 @@
       class="navbar is-fixed"
       role="navigation"
       aria-label="main navigation"
-      v-if="showMenu($router)"
     >
       <div class="container" style="padding-bottom: 10px">
         <div class="navbar-brand">
@@ -16,7 +15,7 @@
             />
           </a>
         </div>
-        <div class="navbar-menu">
+        <div class="navbar-menu" v-if="this.showMenu()">
           <div class="navbar-start"></div>
           <div class="navbar-end">
             <router-link class="navbar-item" to="/jobs" v-if="this.hasUser"
@@ -73,7 +72,7 @@
   </div>
 </template>
 <script>
-import { getUser } from "../src/services/authentication";
+import { getUser, hookUser } from "../src/services/authentication";
 
 export default {
   data() {
@@ -86,6 +85,10 @@ export default {
     showMenu(e) {
       return e?.currentRoute?._value?.meta?.hideMenu !== true;
     },
+  },
+  mounted() {
+    // Set the user existence state when the user object changes.
+    hookUser((u) => (this.hasUser = u !== undefined && u !== null));
   },
 };
 </script>
