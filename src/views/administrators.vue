@@ -33,6 +33,7 @@
     :hide="() => (this.setupActive = false)"
     :saved="saved"
   />
+
 </template>
 <script>
 import http from "../services/http";

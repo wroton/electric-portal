@@ -1,10 +1,6 @@
 <template>
   <div>
-    <nav
-      class="navbar is-fixed"
-      role="navigation"
-      aria-label="main navigation"
-    >
+    <nav class="navbar is-fixed" role="navigation" aria-label="main navigation">
       <div class="container" style="padding-bottom: 10px">
         <div class="navbar-brand">
           <a class="navbar-item" href="">
@@ -44,9 +40,6 @@
               to="/businesses"
               v-if="this.hasUser"
               >Businesses</router-link
-            >
-            <router-link class="navbar-item" to="/settings" v-if="this.hasUser"
-              >Settings</router-link
             >
             <div class="navbar-item" v-if="!this.hasUser">
               <div class="buttons">

@@ -51,6 +51,14 @@ const routes = [
     }
   },
   {
+    path: "/login",
+    name: "Login",
+    component: () => import(/* webpackChunkName: "login" */ "../views/login.vue"),
+    meta: {
+      hideMenu: true
+    }
+  },
+  {
     path: "/profile",
     name: "Profile",
     component: () => import(/* webpackChunkName: "profile" */ "../views/profile.vue"),
@@ -67,19 +75,19 @@ const routes = [
     }
   },
   {
-    path: "/technicians",
-    name: "Technicians",
-    component: () => import(/* webpackChunkName: "technicians" */ "../views/technicians.vue"),
+    path: "/settings",
+    name: "Settings",
+    component: () => import(/* webpackChunkName: "settings" */ "../views/settings.vue"),
     meta: {
       authorized: true
     }
   },
   {
-    path: "/login",
-    name: "Login",
-    component: () => import(/* webpackChunkName: "login" */ "../views/login.vue"),
+    path: "/technicians",
+    name: "Technicians",
+    component: () => import(/* webpackChunkName: "technicians" */ "../views/technicians.vue"),
     meta: {
-      hideMenu: true
+      authorized: true
     }
   }
 ];

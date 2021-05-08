@@ -6,7 +6,7 @@
     <div class="column has-text-right">
       <div class="field">
         <div class="control">
-          <button class="button primary" @click="this.setupActive = true">
+          <button class="button primary" @click="this.create()">
             Create Business
           </button>
         </div>
@@ -27,6 +27,12 @@
         v-for="business in this.businesses"
         v-bind:key="business.id"
         @click="this.selectBusiness(business)"
+        @contextmenu="
+          (e) => {
+            return false;
+            this.showContextMenu(e, business);
+          }
+        "
       >
         <td class="has-text-left">{{ business.name }}</td>
         <td class="has-text-left">{{ business.city }}</td>
@@ -36,8 +42,9 @@
   </table>
   <setup
     :business="selectedBusiness"
-    :isActive="setupActive"
+    :deleted="deleted"
     :hide="() => (this.setupActive = false)"
+    :isActive="setupActive"
     :saved="saved"
   />
 </template>
@@ -51,12 +58,48 @@ export default {
   },
   data() {
     return {
+      menuItems: [
+        {
+          name: "Edit",
+          clicked: () => {},
+        },
+        {
+          name: "Delete",
+          clicked: () => {},
+        },
+      ],
+      mouseX: undefined,
+      mouseY: undefined,
       businesses: [],
       selectedBusiness: undefined,
       setupActive: false,
     };
   },
   methods: {
+    create() {
+      this.selectedBusiness = undefined;
+      this.setupActive = true;
+    },
+    deleted() {
+      // Remove the business.
+      let businesses = this.businesses.reduce((p, c, i) => {
+        // Match. Don't add it.
+        if (c.id === this.selectedBusiness.id) {
+          return;
+        }
+
+        console.log(p);
+        console.log(c);
+        console.log(i);
+        p[i] = c;
+      }, []);
+      console.log(businesses);
+
+      // Set the new business array and hide the modal.
+      this.businesses = businesses;
+      this.selectedBusiness = undefined;
+      this.setupActive = false;
+    },
     saved(business) {
       // If there is no business, do nothing else.
       if (!business) {

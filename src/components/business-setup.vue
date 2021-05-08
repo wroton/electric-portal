@@ -77,6 +77,17 @@
           <button
             v-bind:class="{
               button: true,
+              'is-danger': true,
+              'is-loading': saving,
+            }"
+            @click="del()"
+            v-if="this.business?.id !== undefined"
+          >
+            Delete
+          </button>
+          <button
+            v-bind:class="{
+              button: true,
               'is-success': true,
               'is-loading': saving,
             }"
@@ -99,6 +110,7 @@ function goodString(x) {
 
 export default {
   computed: {
+    b: () => this.business,
     canSave() {
       return (
         goodString(this.name) &&
@@ -112,29 +124,45 @@ export default {
   data() {
     return {
       error: "",
-      addressLine1: this.business?.addressLine1,
-      addressLine2: this.business?.addressLine2,
-      city: this.business?.city,
-      name: this.business?.name,
-      state: this.business?.state,
-      zipCode: this.business?.zipCode,
+      addressLine1: undefined,
+      addressLine2: undefined,
+      city: undefined,
+      name: undefined,
+      state: undefined,
+      zipCode: undefined,
       saving: false,
+      deleting: false,
     };
   },
   methods: {
-    save() {
-      // Double check can save just in case this gets executed some other way.
-      if (!this.canSave) {
+    del() {
+      if (this.deleting || this.saving) {
         return;
       }
 
-      // Now saving.
+      this.deleting = true;
+      http
+        .delete(`businesses/${this.business.id}`)
+        .then(() => {
+          this.deleting = false;
+          this.error = "";
+          this.deleted();
+        })
+        .catch(() => {
+          this.deleting = false;
+          this.deleted();
+        });
+    },
+    save() {
+      if (this.deleting || this.saving) {
+        return;
+      }
+
       this.error = "";
       this.saving = true;
 
-      // Create the request.
       const request = {
-        id: this.business.id ? this.business.id : undefined,
+        id: this.business?.id ? this.business.id : undefined,
         addressLine1: this.addressLine1,
         addressLine2: goodString(this.addressLine2) ? this.addressLine2 : null,
         city: this.city,
@@ -143,10 +171,10 @@ export default {
         name: this.name,
       };
 
-      // Determine the correct method.
-      const method = this.business.id ? http.put : http.post;
+      const method = this.business?.id ? http.put : http.post;
 
-      // Create or edit the business.
+      this.saving = true;
+
       method("businesses", request)
         .then((res) => {
           this.saving = false;
@@ -158,7 +186,6 @@ export default {
         });
     },
     tryHide() {
-      // Don't hide if saving.
       if (this.saving) {
         return;
       }
@@ -166,6 +193,23 @@ export default {
       this.hide();
     },
   },
-  props: ["isActive", "hide", "business", "saved"],
+  props: {
+    business: Object,
+    deleted: Function,
+    hide: Function,
+    isActive: Boolean,
+    saved: Function,
+  },
+  watch: {
+    business() {
+      this.id = this.business?.id;
+      this.name = this.business?.name;
+      this.addressLine1 = this.business?.addressLine1;
+      this.addressLine2 = this.business?.addressLine2;
+      this.city = this.business?.city;
+      this.state = this.business?.state;
+      this.zipCode = this.business?.zipCode;
+    },
+  },
 };
 </script>
