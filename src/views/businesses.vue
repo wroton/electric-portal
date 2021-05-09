@@ -24,15 +24,9 @@
     <tbody>
       <tr
         class="is-clickable"
-        v-for="business in this.businesses"
+        v-for="business in page"
         v-bind:key="business.id"
-        @click="this.selectBusiness(business)"
-        @contextmenu="
-          (e) => {
-            return false;
-            this.showContextMenu(e, business);
-          }
-        "
+        @click="selectBusiness(business)"
       >
         <td class="has-text-left">{{ business.name }}</td>
         <td class="has-text-left">{{ business.city }}</td>
@@ -40,10 +34,15 @@
       </tr>
     </tbody>
   </table>
+  <div class="is-flex is-flex-direction-row is-justify-content-flex-end">
+    <a class="button" title="Previous Page" @click="previous()">Previous</a>
+    <input class="input page-index" type="text" :value="pageSelection" />
+    <a class="button" title="Next Page" @click="next()">Next</a>
+  </div>
   <setup
     :business="selectedBusiness"
     :deleted="deleted"
-    :hide="() => (this.setupActive = false)"
+    :hide="() => (setupActive = false)"
     :isActive="setupActive"
     :saved="saved"
   />
@@ -56,22 +55,31 @@ export default {
   components: {
     setup,
   },
+  computed: {
+    nextDisabled() {
+      return this.pageIndex >= this.pageCount;
+    },
+    page() {
+      if (this.businesses.length < 1) {
+        return [];
+      }
+
+      let startIndex = this.pageIndex * 10;
+      return this.businesses.slice(startIndex, startIndex + 10);
+    },
+    pageCount() {
+      return Math.ceil(this.businesses.length / 10);
+    },
+    previousDisabled() {
+      return this.pageIndex == 0;
+    },
+  },
   data() {
     return {
-      menuItems: [
-        {
-          name: "Edit",
-          clicked: () => {},
-        },
-        {
-          name: "Delete",
-          clicked: () => {},
-        },
-      ],
-      mouseX: undefined,
-      mouseY: undefined,
       businesses: [],
       selectedBusiness: undefined,
+      pageIndex: 0,
+      pageSelection: "1",
       setupActive: false,
     };
   },
@@ -82,12 +90,35 @@ export default {
     },
     deleted() {
       // Remove the business.
-      let businesses = this.businesses.filter(x => x.id !== this.selectedBusiness.id);
+      let businesses = this.businesses.filter(
+        (x) => x.id !== this.selectedBusiness.id
+      );
 
       // Set the new business array and hide the modal.
       this.businesses = businesses;
       this.selectedBusiness = undefined;
       this.setupActive = false;
+    },
+    next() {
+      if (this.nextDisabled) {
+        return;
+      }
+
+      // Resolve.
+      let start = (this.pageIndex + 1) * 10;
+      console.log(this.businesses.slice(start, start + 10));
+      businesses.resolve(this.businesses, start, 10);
+
+      this.pageIndex += 1;
+      this.pageSelection = String(this.pageIndex);
+    },
+    previous() {
+      if (this.previousDisabled) {
+        return;
+      }
+
+      this.pageIndex -= 1;
+      this.pageSelection = String(this.pageIndex);
     },
     saved(business) {
       // If there is no business, do nothing else.
@@ -126,15 +157,22 @@ export default {
     try {
       // Get all accessible businesses. Reset businesses if none were given.
       let response = await businesses.list();
-      if (!response?.data) {
+      if (!response) {
         this.businesses = [];
         return;
       }
 
-      this.businesses = response.data;
+      this.businesses = response;
     } catch (err) {
       console.log(err);
     }
   },
 };
 </script>
+<style scoped>
+.page-index {
+  max-width: 50px;
+  margin: 0 10px;
+  text-align: center;
+}
+</style>
