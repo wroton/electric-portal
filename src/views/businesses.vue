@@ -82,18 +82,7 @@ export default {
     },
     deleted() {
       // Remove the business.
-      let businesses = this.businesses.reduce((p, c, i) => {
-        // Match. Don't add it.
-        if (c.id === this.selectedBusiness.id) {
-          return;
-        }
-
-        console.log(p);
-        console.log(c);
-        console.log(i);
-        p[i] = c;
-      }, []);
-      console.log(businesses);
+      let businesses = this.businesses.filter(x => x.id !== this.selectedBusiness.id);
 
       // Set the new business array and hide the modal.
       this.businesses = businesses;
