@@ -64,8 +64,19 @@ export default {
         return [];
       }
 
-      let startIndex = this.pageIndex * 10;
-      return this.businesses.slice(startIndex, startIndex + 10);
+      // Get the first ten that are resolved.
+      let index = this.pageIndex * 10;
+      let slice = [];
+      while (slice.length < 10 && index < this.businesses.length) {
+        let business = this.businesses[index];
+        if (business.resolved) {
+          slice.push(business);
+        }
+
+        index++;
+      }
+      
+      return slice;
     },
     pageCount() {
       return Math.ceil(this.businesses.length / 10);
@@ -99,18 +110,18 @@ export default {
       this.selectedBusiness = undefined;
       this.setupActive = false;
     },
-    next() {
+    async next() {
       if (this.nextDisabled) {
         return;
       }
 
       // Resolve.
       let start = (this.pageIndex + 1) * 10;
-      console.log(this.businesses.slice(start, start + 10));
-      businesses.resolve(this.businesses, start, 10);
+      let resolved = await businesses.resolve(this.businesses, start, 10);
 
-      this.pageIndex += 1;
-      this.pageSelection = String(this.pageIndex);
+      this.pageIndex = this.pageIndex + 1;
+      this.pageSelection = String(this.pageIndex + 1);
+      this.businesses = resolved;
     },
     previous() {
       if (this.previousDisabled) {

@@ -11,7 +11,7 @@ export async function list() {
     // If there are ten, get the first ten. Otherwise get them all.
     let toResolve = businesses.data.slice(0, 10);
     let resolvedBusinesses = await http.post("businesses/resolve", toResolve);
-    if (businesses?.status !== 200) {
+    if (resolvedBusinesses?.status !== 200) {
       return [];
     }
 
@@ -22,12 +22,10 @@ export async function list() {
     }));
 
     let unresolved = businesses.data.slice(10);
-    everything.push(unresolved.map(x => ({
+    return everything.concat(unresolved.map(x => ({
       id: x,
       resolved: false
     })));
-
-    return everything;
   } catch (err) {
     return null;
   }
@@ -35,9 +33,14 @@ export async function list() {
 
 export async function resolve(businesses, start, count) {
   try {
-    // Determine the businesses requested.
-    let requested = businesses.slice(start, start + count);
-    requested = requested.map(x => x.id);
+    // Determine the businesses requested and filter out ones that are already resolved.
+    const sliced = businesses.slice(start, start + count);
+    const requested = sliced.filter(x => !x.resolved).map(x => x.id);
+
+    // If there are none to get, return.
+    if (!requested || requested.length == 0) {
+      return businesses;
+    }
 
     // Resolve the businesses.
     let response = await http.post("businesses/resolve", requested);
@@ -45,9 +48,10 @@ export async function resolve(businesses, start, count) {
       return businesses;
     }
 
-    // Reduce the response.
+    // Index the response by id.
     let reduced = response.data.reduce((p, c) => {
       p[c.id] = c;
+      return p;
     }, {});
 
     // Merge the businesses.
